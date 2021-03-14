@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<!-- head 开始 -->
+
+<head>
+    <meta charset="utf-8">
+    <title>YYUEsys</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/layuiadmin/layui/css/layui.css" media="all">
+    <style>
+        body {
+            padding-top: 10px;
+            background-color: #f5f5f5
+        }
+    </style>
+</head>
+<!-- head结束 -->
+
+<body>
+
+    <div class="layui-fluid">
+
+        <!-- 输入表单 开始 -->
+        <form class="layui-form layui-form-pane">
+            <!-- 隐藏ID -->
+            <div class="layui-form-item" style="display:none;">
+                <label class="layui-form-label">ID</label>
+                <div class="layui-input-block">
+                    <input value="{{.ID}}" type="text" name="id" autocomplete="off" placeholder="" class="layui-input"
+                        maxlength="32">
+                </div>
+            </div>
+            <!-- 合周名称 -->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">合同名称</label>
+                    <div class="layui-input-inline">
+                        <input value="{{.Name}}" type="text" name="Name" lay-verify="required" autocomplete="off"
+                            class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="State" value="有效" title="有效" checked="">
+                        <input type="radio" name="State" value="停用" title="停用" {{if compare .State "停用"}} checked=""
+                            {{end}}>
+                    </div>
+                </div>
+            </div>
+            <!-- 预设时限 预设价格 -->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">预设期限</label>
+                    <div class="layui-input-inline">
+                        <input value="{{.Duration}}" type="text" name="Duration" lay-verify="required|number"
+                            placeholder="服务期限月数" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">预设价格</label>
+                    <div class="layui-input-inline">
+                        <input value="{{.Price}}" type="text" name="Price" lay-verify="required|number"
+                            autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 0px;"></fieldset>
+            <!-- 住址 -->
+            <div class="layui-form-item">
+
+                {{range .Serviceitemlist}}
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="text-align:left;">{{.Name}}</label>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" name="{{.Name}}" autocomplete="off" class="layui-input" lay-verify=""
+                            style="width:60px;" value={{.Quantity}}>
+                    </div>
+                </div>
+                {{end}}
+
+            </div>
+            <!-- 备注 -->
+            <div class="layui-form-item">
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">简历备注</label>
+                    <div class="layui-input-block">
+                        <textarea name="Memo" placeholder="" class="layui-textarea" style="height: 50px;"
+                            maxlength="1024">{{.Memo}}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 提交 -->
+            <input class="layui-btn" lay-filter="submit" lay-submit="" id="form-submit" style="display:none;" />
+        </form>
+        <!-- 输入表单 结束 -->
+    </div>
+
+    <script src="/static/layuiadmin/layui/layui.all.js" charset="utf-8"></script>
+
+    <script>
+        layui.use(['form', 'layer', 'jquery', 'layedit', 'laydate'],
+            function () {
+                $ = layui.jquery;
+                var form = layui.form,
+                    layer = layui.layer,
+                    layedit = layui.layedit,
+                    laydate = layui.laydate;
+
+                form.on('submit(submit)', function () {
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/basic/contract/save",
+                        async: true,
+                        data: $('form').serialize(),
+                        datatype: 'json',
+                        success: function (rs) {
+                            if (rs.code == 200) {
+                                // console.log(data);
+                                layer.msg("保存成功", {
+                                    icon: 6,
+                                    time: 600
+                                },
+                                    function () {
+                                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                        parent.layer.close(index); //执行关闭
+                                        // parent.$(".layui-laypage-btn").click(); //刷新表格
+                                        parent.layui.table.reload("data_table");
+                                    });
+
+                            } else {
+                                layer.msg(rs.msg, {
+                                    icon: 5,
+                                    time: 1000
+                                });
+                            }
+                        }
+
+                    })
+                    return false;
+                });
+
+                //日期
+                laydate.render({
+                    elem: '#Entrydate'
+                });
+            });
+        function cknum(value) {
+            value = value.replace(/[^\d.]/g, '');
+            if ('' != value) {
+                value = parseFloat(value);
+            }
+            return value;
+        }
+    </script>
+
+</body>
+
+</html>
