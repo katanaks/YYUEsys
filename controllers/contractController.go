@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/beego/beego/v2/adapter/validation"
+	"github.com/beego/beego/v2/core/validation"
 	beego "github.com/beego/beego/v2/server/web"
 )
 
