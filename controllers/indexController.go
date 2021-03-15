@@ -1,6 +1,6 @@
 package controllers
 
-import beego "github.com/beego/beego/v2/adapter"
+import beego "github.com/beego/beego/v2/server/web"
 
 //MainController 系统主控制器
 type MainController struct {
