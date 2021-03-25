@@ -83,7 +83,6 @@ func (c *ClassController) PageEdit() {
 	c.Data["Memo"] = item.Memo
 
 	c.TplName = "basic/class_edit.html"
-
 }
 
 //GetList 班级列表
