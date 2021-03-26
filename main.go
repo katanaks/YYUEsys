@@ -14,7 +14,8 @@ func init() {
 	// 配置数据库
 	utils.InitDB()
 
-	orm.RunSyncdb("default", false, true) //表自动生成
+	var err = orm.RunSyncdb("default", false, true) //表自动生成
+	print(err)
 
 	//log设置
 	utils.LogInit()
