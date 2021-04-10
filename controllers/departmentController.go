@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"strings"
 
-	beego "github.com/beego/beego/v2/server/web"
 	"github.com/beego/beego/v2/adapter/validation"
+	beego "github.com/beego/beego/v2/server/web"
 )
 
 //DepartmentJSON 列表json格式
@@ -75,8 +75,8 @@ func (c *DepartmentController) GetDepartmentList() {
 	limit, _ := c.GetInt("limit")
 
 	list, count := models.GetDepartmentList(c.GetSession("CID").(int), page, limit)
-	var code int = 200
-	var msg string = "success"
+	var code = 200
+	var msg = "success"
 	if len(list) == 0 {
 		code = 100
 		msg = "无数据。"
@@ -85,7 +85,7 @@ func (c *DepartmentController) GetDepartmentList() {
 	//返回Json
 	Datastr := DepartmentJSON{code, msg, count, list}
 	c.Data["json"] = Datastr
-	c.ServeJSON()
+	_ = c.ServeJSON()
 
 	//日志输出
 	go logsDepartment(c, "list", code, "部门列表", "Total:"+strconv.FormatInt(count, 10))
@@ -106,7 +106,7 @@ func (c *DepartmentController) SaveDepartment() {
 	// logs.Debug(id, item.Name, item.Memo, item.CID)
 
 	//准备 Json
-	var code int = 200
+	var code = 200
 	var errinfo string
 
 	//验证表单
@@ -137,7 +137,7 @@ func (c *DepartmentController) SaveDepartment() {
 	//返回 Json
 	rs := &departmentSimpJSON{code, errinfo}
 	c.Data["json"] = rs
-	c.ServeJSON()
+	_ = c.ServeJSON()
 
 	//日志输出
 	go logsDepartment(c, "list", code, "部门保存", item.Name)
@@ -162,7 +162,7 @@ func (c *DepartmentController) DelDepartment() {
 	// 返回 Json
 	rs := &departmentSimpJSON{code, msg}
 	c.Data["json"] = rs
-	c.ServeJSON()
+	_ = c.ServeJSON()
 	//日志输出
 	go logsDepartment(c, "del", code, "部门删除", "id:"+strconv.Itoa(id))
 

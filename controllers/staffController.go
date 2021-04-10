@@ -100,8 +100,8 @@ func (c *StaffController) GetList() {
 	limit, _ := c.GetInt("limit")
 	rslist, count := models.GetStaffList(c.GetSession("CID").(int), page, limit)
 	// println(len(Rlist))
-	var code int = 200
-	var msg string = "success"
+	var code = 200
+	var msg = "success"
 	if len(rslist) == 0 {
 		code = 100
 		msg = "无数据。"
@@ -110,7 +110,7 @@ func (c *StaffController) GetList() {
 	//返回Json
 	Datastr := StaffJSON{code, msg, count, rslist}
 	c.Data["json"] = Datastr
-	c.ServeJSON()
+	_ = c.ServeJSON()
 
 	//日志输出
 	go logsStaff(c, "list", code, "员工列表", "Total:"+strconv.FormatInt(count, 10))
@@ -146,7 +146,7 @@ func (c *StaffController) Save() {
 	// logs.Debug(item)
 
 	//准备 Json
-	var code int = 200
+	var code = 200
 	var errinfo string
 
 	//验证表单

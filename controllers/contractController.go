@@ -114,8 +114,8 @@ func (c *ContractController) GetList() {
 	}
 
 	//准备json
-	var code int = 200
-	var msg string = "success"
+	var code = 200
+	var msg = "success"
 	if len(rslist) == 0 {
 		code = 100
 		msg = "无数据。"
@@ -124,7 +124,7 @@ func (c *ContractController) GetList() {
 	//返回Json
 	Datastr := ContractJSON{code, msg, count, rslist}
 	c.Data["json"] = Datastr
-	c.ServeJSON()
+	_ = c.ServeJSON()
 
 	//日志输出
 	go logsContract(c, "list", code, "合同列表", "Total:"+strconv.FormatInt(count, 10))
@@ -154,7 +154,7 @@ func (c *ContractController) Save() {
 	}
 
 	//准备 Json
-	var code int = 200
+	code := 200
 	var errinfo string
 
 	//验证表单
@@ -184,7 +184,7 @@ func (c *ContractController) Save() {
 	// //返回 Json
 	rs := &contractSimpJSON{code, errinfo}
 	c.Data["json"] = rs
-	c.ServeJSON()
+	_ = c.ServeJSON()
 
 	//日志输出
 	go logsContract(c, "save", code, "合同保存", item.Name)
@@ -207,7 +207,7 @@ func (c *ContractController) Del() {
 	// 返回 Json
 	rs := &contractSimpJSON{code, msg}
 	c.Data["json"] = rs
-	c.ServeJSON()
+	_ = c.ServeJSON()
 	//日志输出
 	go logsContract(c, "del", code, "删除合同", strconv.Itoa(id))
 }

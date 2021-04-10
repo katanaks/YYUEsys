@@ -61,7 +61,7 @@ func GetDepartmentItem(ID int) Department {
 	o := orm.NewOrm()
 	var item Department
 	item.ID = ID
-	o.Read(&item, "ID")
+	_ = o.Read(&item, "ID")
 
 	return item
 }

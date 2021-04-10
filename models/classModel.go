@@ -74,7 +74,7 @@ func GetClassItem(ID int) Class {
 	o := orm.NewOrm()
 	var item Class
 	item.ID = ID
-	o.Read(&item, "ID")
+	_ = o.Read(&item, "ID")
 
 	return item
 }

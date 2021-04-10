@@ -19,7 +19,7 @@ import (
 type MembersJSON models.PubJSON
 
 //memberSimpJSON 简单json格式
-type memberSimpJSON models.SimpJSON
+//type memberSimpJSON models.SimpJSON
 
 //MembersController 员工数据控制器
 type MembersController struct {
@@ -117,8 +117,8 @@ func (c *MembersController) GetList() {
 	limit, _ := c.GetInt("limit")
 	rslist, count := models.GetMembersList(c.GetSession("CID").(int), page, limit)
 	// println(len(Rlist))
-	var code int = 200
-	var msg string = "success"
+	var code = 200
+	var msg = "success"
 	if len(rslist) == 0 {
 		code = 100
 		msg = "无数据。"
@@ -135,7 +135,7 @@ func (c *MembersController) GetList() {
 	Datastr := ServiceJSON{code, msg, count, rslist}
 	c.Data["json"] = Datastr
 
-	c.ServeJSON()
+	_ = c.ServeJSON()
 
 	//日志输出
 	go logsMembers(c, "list", code, "会员列表", "Total:"+strconv.Itoa(len(rslist)))
@@ -263,5 +263,5 @@ func (c *MembersController) Getpredata() {
 	rs[0]["preend"] = preend
 
 	c.Data["json"] = rs[0]
-	c.ServeJSON()
+	_ = c.ServeJSON()
 }

@@ -90,8 +90,8 @@ func (c *ServiceController) GetList() {
 	limit, _ := c.GetInt("limit")
 	rslist, count := models.GetServiceList(c.GetSession("CID").(int), page, limit)
 	// println(len(Rlist))
-	var code int = 200
-	var msg string = "success"
+	var code = 200
+	var msg = "success"
 	if len(rslist) == 0 {
 		code = 100
 		msg = "无数据。"
@@ -134,7 +134,7 @@ func (c *ServiceController) Save() {
 	// logs.Debug("save:", item)
 
 	//准备 Json
-	var code int = 200
+	var code = 200
 	var errinfo string
 
 	//验证表单
@@ -166,7 +166,7 @@ func (c *ServiceController) Save() {
 	//返回 Json
 	rs := &serviceSimpJSON{code, errinfo}
 	c.Data["json"] = rs
-	c.ServeJSON()
+	_ = c.ServeJSON()
 
 	//日志输出
 	go logsService(c, "save", code, "服务保存", item.Name)
