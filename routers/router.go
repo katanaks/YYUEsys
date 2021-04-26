@@ -91,7 +91,7 @@ func init() {
 	// beego.Router("/basic/service/pageedit", &controllers.ServiceController{}, "get:PageEdit") //显示 编辑
 
 	beego.Router("/members/getlist", &controllers.MembersController{}, "get:GetList") //方法 获取列表
-	// beego.Router("/basic/service/save", &controllers.ServiceController{}, "post:Save")      //方法 保存
-	// beego.Router("/basic/service/del", &controllers.ServiceController{}, "post:Del")        //方法 删除
+	beego.Router("/members/save", &controllers.MembersController{}, "post:Save")      //方法 保存
+	// beego.Router("/members/del", &controllers.ServiceController{}, "post:Del")        //方法 删除
 	beego.Router("/members/getpredata", &controllers.MembersController{}, "get:Getpredata") //方法 获取列表
 }

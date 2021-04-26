@@ -8,6 +8,7 @@ import (
 	"YYUEsys/models"
 	"YYUEsys/models/utils"
 	"fmt"
+	"github.com/beego/beego/v2/core/logs"
 	"strconv"
 	"strings"
 	"time"
@@ -141,71 +142,85 @@ func (c *MembersController) GetList() {
 	go logsMembers(c, "list", code, "会员列表", "Total:"+strconv.Itoa(len(rslist)))
 }
 
-// //Save 保存服务方法
-// ///////////////////////////////////////////////////////////////////////////////
-// func (c *MembersController) Save() {
-// 	//准备数据
-// 	var item models.Service
-// 	var err error
-// 	id, _ := c.GetInt("id") //编辑id变量
-// 	item.ID = id
-// 	item.Name = strings.Trim(c.GetString("Name"), "")
+//Save 保存服务方法
+///////////////////////////////////////////////////////////////////////////////
+func (c *MembersController) Save() {
+	//准备数据
+	var item models.Members
+	var err error
 
-// 	// StaffID, _ := c.GetInt("Staff")        //读员工ID
-// 	// StaffItem := models.Staff{ID: StaffID} //赋值条目
-// 	// item.Staff = &StaffItem
-// 	// item.StartDates, _ = time.ParseInLocation("2006-01-02", c.GetString("StartDates"), time.Local)
+	item.CID = c.GetSession("CID").(int)
 
-// 	if c.GetString("State") == "on" {
-// 		item.State = "有效"
-// 	} else {
-// 		item.State = "停用"
-// 	}
-// 	// logs.Debug(item.State)
+	id, _ := c.GetInt("id") //编辑id变量
+	item.ID = id
+	item.Name = strings.Trim(c.GetString("Name"), "")
+	item.Gender = c.GetString("Gender")
+	item.Birthday, _ = time.ParseInLocation("2006-01-02", c.GetString("Birthday"), time.Local)
+	item.Idcard = c.GetString("Idcard")
+	item.Contractrelationship = c.GetString("Contractrelationship")
+	item.Contactname = c.GetString("Contactname")
+	item.Contactidcard = c.GetString("Contactidcard")
+	item.Contacttelephone = c.GetString("Contacttelephone")
+	item.State = "有效"
+	item.Memo = c.GetString("Memo")
 
-// 	// item.Memo = c.GetString("Memo")
-// 	item.CID = c.GetSession("CID").(int)
+	item.Createtime = time.Now()
+	item.Updatetime = time.Now()
 
-// 	// logs.Debug("save:", item)
+	fmt.Println(item)
+	// StaffID, _ := c.GetInt("Staff")        //读员工ID
+	// StaffItem := models.Staff{ID: StaffID} //赋值条目
+	// item.Staff = &StaffItem
+	// item.StartDates, _ = time.ParseInLocation("2006-01-02", c.GetString("StartDates"), time.Local)
 
-// 	//准备 Json
-// 	var code int = 200
-// 	var errinfo string
+	//if c.GetString("State") == "on" {
+	//	item.State = "有效"
+	//} else {
+	//	item.State = "停用"
+	//}
+	// logs.Debug(item.State)
 
-// 	//验证表单
-// 	cvinfo := ValidService(item)
-// 	errinfo += cvinfo
+	logs.Debug("save:", item)
 
-// 	//重复检查
-// 	cdinfo := models.CheckServiceDuplicate(item)
+	//准备 Json
+	var code int = 200
+	var errinfo string
 
-// 	errinfo += cdinfo
+	//验证表单
+	//cvinfo := ValidService(item)
+	//errinfo += cvinfo
 
-// 	if errinfo != "" {
-// 		code = 100
-// 	} else {
-// 		//保存
-// 		//如果无id号新增，否则进行更新
-// 		if id == 0 {
-// 			err = models.AddService(item) //新增
-// 		} else {
-// 			err = models.UpdateService(item) //编辑
-// 		}
+	//重复检查
+	//cdinfo := models.CheckServiceDuplicate(item)
 
-// 		if err != nil {
-// 			code = 100
-// 			errinfo += "写数据失败，请刷新重试"
-// 		}
-// 	}
+	//errinfo += cdinfo
 
-// 	//返回 Json
-// 	rs := &serviceSimpJSON{code, errinfo}
-// 	c.Data["json"] = rs
-// 	c.ServeJSON()
+	if errinfo != "" {
+		code = 100
+	} else {
+		//保存
+		//如果无id号新增，否则进行更新
+		if id == 0 {
+			err = models.AddMember(item) //新增
 
-// 	//日志输出
-// 	go logsMembers(c, "save", code, "服务保存", item.Name)
-// }
+		} else {
+			//err = models.UpdateService(item) //编辑
+		}
+
+		if err != nil {
+			code = 100
+			errinfo += "写数据失败，请刷新重试"
+		}
+	}
+
+	//返回 Json
+	rs := &serviceSimpJSON{code, errinfo}
+	c.Data["json"] = rs
+	c.ServeJSON()
+
+	//日志输出
+	go logsMembers(c, "save", code, "服务保存", item.Name)
+}
 
 // //Del 删除服务 方法
 // ///////////////////////////////////////////////////////////////////////////////

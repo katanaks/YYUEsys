@@ -48,19 +48,19 @@ func GetMembersList(cid, page, limit int) ([]orm.Params, int64) {
 // 	return err
 // }
 
-// //AddService 新增
-// func AddService(item Service) error {
-// 	o := orm.NewOrm()
+//AddMember 新增
+func AddMember(item Members) error {
+	o := orm.NewOrm()
 
-// 	_, err := o.Insert(&item)
-// 	// logs.Debug("写入", item)
+	logs.Debug("写入", item)
+	_, err := o.Insert(&item)
 
-// 	if err != nil {
-// 		logs.Error(err.Error())
-// 	}
+	if err != nil {
+		logs.Error(err.Error())
+	}
 
-// 	return err
-// }
+	return err
+}
 
 // //UpdateService 更新
 // func UpdateService(item Service) error {
