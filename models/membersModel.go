@@ -49,11 +49,12 @@ func GetMembersList(cid, page, limit int) ([]orm.Params, int64) {
 // }
 
 //AddMember 新增
-func AddMember(item Members) error {
+func AddMember(item Members, itemtransaction Membertransaction) error {
 	o := orm.NewOrm()
 
-	logs.Debug("写入", item)
-	_, err := o.Insert(&item)
+	newid, err := o.Insert(&item)         //写新会员
+	itemtransaction.MemberID = int(newid) //赋值交易表ID
+	o.Insert(&itemtransaction)            //写交易表
 
 	if err != nil {
 		logs.Error(err.Error())

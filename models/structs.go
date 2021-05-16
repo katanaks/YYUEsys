@@ -117,7 +117,7 @@ type Members struct {
 	Contacttelephone     string    `orm:"column(contacttelephone);size(11);description(联系人电话)"`      //联系人电话
 	State                string    `orm:"column(state);size(18);description(状态)"`
 	//Membersigning        []*Membersigning      `orm:"reverse(many);description(签约表)"`                                           //签约表
-	//Membertransaction    []*Membertransaction  `orm:"reverse(many);description(交易表)"`                                           //交易表ID
+	Membertransaction []*Membertransaction `orm:"reverse(many);description(交易表)"` //交易表ID
 	//Memberalbum          []*Memberalbum        `orm:"reverse(many);description(相册表)"`                                           //相册表
 	//Memberserverrecord   []*Memberserverrecord `orm:"reverse(many);description(服务记录表)"`                                         //服务记录表
 	Memo       string    `orm:"column(memo);size(1024);description(备注)"`                                  //备注
@@ -127,13 +127,12 @@ type Members struct {
 
 //Membertransaction 交易详情
 type Membertransaction struct {
-	ID            int       `orm:"auto;pk;column(i_d);size(11);description(会员ID)"`
+	ID            int       `orm:"auto;pk;column(i_d);size(11);description(交易ID)"`
 	CID           int       `orm:"index;column(c_id);size(11);description(所属公司)"`
-	Member        *Members  `orm:"rel(fk);description(对应会员)"` //对应会员
-	Contract      *Contract `orm:"rel(fk);description(对应对应合同)"`
+	MemberID      int       `orm:"column(member_id);description(对应会员)"` //对应会员
+	ContractID    int       `orm:"column(contract_id);description(对应对应合同)"`
 	Durationstart time.Time `orm:"type(datetime);column(Durationstart);size(0);description(合同开始日期)"`         //合同开始日期
 	Durationend   time.Time `orm:"type(datetime);column(Durationend);size(0);description(合同终止日期)"`           //合同终止日期
-	Discount      float64   `orm:"column(discount);size(11);description(折扣)"`                                //折扣
 	Paid          float64   `orm:"column(paid);size(11);description(折扣)"`                                    //实付
 	Memo          string    `orm:"column(memo);size(1024);description(备注)"`                                  //备注
 	Createtime    time.Time `orm:"auto_now_add;type(datetime);column(createtime);size(0);description(新建时间)"` //自动新建时间

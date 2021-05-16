@@ -147,8 +147,11 @@ func (c *MembersController) GetList() {
 func (c *MembersController) Save() {
 	//准备数据
 	var item models.Members
+	var itemtransaction models.Membertransaction
+
 	var err error
 
+	//准备会员表
 	item.CID = c.GetSession("CID").(int)
 
 	id, _ := c.GetInt("id") //编辑id变量
@@ -167,7 +170,19 @@ func (c *MembersController) Save() {
 	item.Createtime = time.Now()
 	item.Updatetime = time.Now()
 
-	fmt.Println(item)
+	fmt.Println("新会员信息：", item)
+
+	//准备交易表
+	itemtransaction.CID = c.GetSession("CID").(int)
+	itemtransaction.ContractID, _ = c.GetInt("Contract") //对应合同
+
+	itemtransaction.Durationstart, _ = time.ParseInLocation("2006-01-02", c.GetString("Durationstart"), time.Local)
+	itemtransaction.Durationend, _ = time.ParseInLocation("2006-01-02", c.GetString("Durationend"), time.Local)
+
+	itemtransaction.Paid, _ = c.GetFloat("Paid")
+	itemtransaction.Createtime = time.Now()
+	itemtransaction.Updatetime = itemtransaction.Createtime
+	fmt.Println("交易内容", itemtransaction)
 	// StaffID, _ := c.GetInt("Staff")        //读员工ID
 	// StaffItem := models.Staff{ID: StaffID} //赋值条目
 	// item.Staff = &StaffItem
@@ -201,7 +216,7 @@ func (c *MembersController) Save() {
 		//保存
 		//如果无id号新增，否则进行更新
 		if id == 0 {
-			err = models.AddMember(item) //新增
+			err = models.AddMember(item, itemtransaction) //新增
 
 		} else {
 			//err = models.UpdateService(item) //编辑
