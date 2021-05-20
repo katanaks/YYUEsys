@@ -111,7 +111,7 @@ func (c *MembersController) PageAdd() {
 
 // }
 
-//GetList 服务列表
+//GetList 会员列表
 ///////////////////////////////////////////////////////////////////////////////
 func (c *MembersController) GetList() {
 	page, _ := c.GetInt("page")
@@ -124,14 +124,18 @@ func (c *MembersController) GetList() {
 		code = 100
 		msg = "无数据。"
 	}
-
-	//准备服务项目例
-	// allservice, _ := models.GetServiceList(c.GetSession("CID").(int), 1, 9999) // 所有服务项目列表
-
-	// for k,v := range {
-
-	// }
-
+	//准备列表数据
+	////查询相应字段值
+	//for k, v := range rslist {
+	//	MemberID := v["ID"].(int64)
+	//	transactionItem := models.GetMembertransactionItem(MemberID) //获取相关同同名称
+	//	fmt.Println(k,transactionItem)
+	//	//
+	//	//for _, v1 := range items { //赋值服务数量
+	//	//	keystr := v1["Service__Name"].(string)
+	//	//	rslist[k][keystr] = v1["Quantity"]
+	//	//}
+	//}
 	//返回Json
 	Datastr := ServiceJSON{code, msg, count, rslist}
 	c.Data["json"] = Datastr
@@ -161,7 +165,6 @@ func (c *MembersController) Save() {
 	item.Birthday, _ = time.ParseInLocation("2006-01-02", c.GetString("Birthday"), time.Local)
 	item.Idcard = c.GetString("Idcard")
 	item.Contractrelationship = c.GetString("Contractrelationship")
-	item.Contactname = c.GetString("Contactname")
 	item.Contactidcard = c.GetString("Contactidcard")
 	item.Contacttelephone = c.GetString("Contacttelephone")
 	item.State = "有效"
@@ -173,9 +176,10 @@ func (c *MembersController) Save() {
 	fmt.Println("新会员信息：", item)
 
 	//准备交易表
-	itemtransaction.CID = c.GetSession("CID").(int)
-	itemtransaction.ContractID, _ = c.GetInt("Contract") //对应合同
 
+	itemtransaction.CID = c.GetSession("CID").(int)
+	itemtransaction.Contract, _ = c.GetInt("Contract") //对应合同
+	itemtransaction.StaffID, _ = c.GetInt("Staff")
 	itemtransaction.Durationstart, _ = time.ParseInLocation("2006-01-02", c.GetString("Durationstart"), time.Local)
 	itemtransaction.Durationend, _ = time.ParseInLocation("2006-01-02", c.GetString("Durationend"), time.Local)
 
@@ -183,32 +187,12 @@ func (c *MembersController) Save() {
 	itemtransaction.Createtime = time.Now()
 	itemtransaction.Updatetime = itemtransaction.Createtime
 	fmt.Println("交易内容", itemtransaction)
-	// StaffID, _ := c.GetInt("Staff")        //读员工ID
-	// StaffItem := models.Staff{ID: StaffID} //赋值条目
-	// item.Staff = &StaffItem
-	// item.StartDates, _ = time.ParseInLocation("2006-01-02", c.GetString("StartDates"), time.Local)
-
-	//if c.GetString("State") == "on" {
-	//	item.State = "有效"
-	//} else {
-	//	item.State = "停用"
-	//}
-	// logs.Debug(item.State)
-
+	println(itemtransaction.Contract)
 	logs.Debug("save:", item)
 
 	//准备 Json
 	var code int = 200
 	var errinfo string
-
-	//验证表单
-	//cvinfo := ValidService(item)
-	//errinfo += cvinfo
-
-	//重复检查
-	//cdinfo := models.CheckServiceDuplicate(item)
-
-	//errinfo += cdinfo
 
 	if errinfo != "" {
 		code = 100

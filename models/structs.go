@@ -105,19 +105,19 @@ type Contractitem struct {
 
 //Members 会员
 type Members struct {
-	ID                   int       `orm:"auto;pk;column(i_d);size(11);description(会员ID)"`
-	CID                  int       `orm:"index;column(c_id);size(11);description(所属公司)"`
-	Name                 string    `orm:"index;column(name);size(8);description(姓名)"`                //姓名
-	Gender               string    `orm:"index;column(gender);size(2);description(性别)"`              //性别
-	Birthday             time.Time `orm:"type(datetime);column(birthday);size(0);description(出生年月)"` //出生年月
-	Idcard               string    `orm:"column(idcard);size(18);description(身份证号)"`                 //身份证号
-	Contractrelationship string    `orm:"column(contractrelationship);size(18);description(联系人关系)"`  //联系人关系
-	Contactname          string    `orm:"column(contactname);size(11);description(联系人姓名)"`           //联系人姓名
-	Contactidcard        string    `orm:"column(contactidcard);size(18);description(联系人身份证)"`        //联系人身份证
-	Contacttelephone     string    `orm:"column(contacttelephone);size(11);description(联系人电话)"`      //联系人电话
-	State                string    `orm:"column(state);size(18);description(状态)"`
+	ID                   int                  `orm:"auto;pk;column(i_d);size(11);description(会员ID)"`
+	CID                  int                  `orm:"index;column(c_id);size(11);description(所属公司)"`
+	Name                 string               `orm:"index;column(name);size(8);description(姓名)"`                //姓名
+	Gender               string               `orm:"index;column(gender);size(2);description(性别)"`              //性别
+	Birthday             time.Time            `orm:"type(datetime);column(birthday);size(0);description(出生年月)"` //出生年月
+	Idcard               string               `orm:"column(idcard);size(18);description(身份证号)"`                 //身份证号
+	Contractrelationship string               `orm:"column(contractrelationship);size(18);description(联系人关系)"`  //联系人关系
+	Contactidcard        string               `orm:"column(contactidcard);size(18);description(联系人身份证)"`        //联系人身份证
+	Contacttelephone     string               `orm:"column(contacttelephone);size(11);description(联系人电话)"`      //联系人电话
+	State                string               `orm:"column(state);size(18);description(状态)"`
+	Membertransaction    []*Membertransaction `orm:"reverse(many);description(交易表)"` //交易表ID
+
 	//Membersigning        []*Membersigning      `orm:"reverse(many);description(签约表)"`                                           //签约表
-	Membertransaction []*Membertransaction `orm:"reverse(many);description(交易表)"` //交易表ID
 	//Memberalbum          []*Memberalbum        `orm:"reverse(many);description(相册表)"`                                           //相册表
 	//Memberserverrecord   []*Memberserverrecord `orm:"reverse(many);description(服务记录表)"`                                         //服务记录表
 	Memo       string    `orm:"column(memo);size(1024);description(备注)"`                                  //备注
@@ -129,11 +129,12 @@ type Members struct {
 type Membertransaction struct {
 	ID            int       `orm:"auto;pk;column(i_d);size(11);description(交易ID)"`
 	CID           int       `orm:"index;column(c_id);size(11);description(所属公司)"`
-	MemberID      int       `orm:"column(member_id);description(对应会员)"` //对应会员
-	ContractID    int       `orm:"column(contract_id);description(对应对应合同)"`
-	Durationstart time.Time `orm:"type(datetime);column(Durationstart);size(0);description(合同开始日期)"`         //合同开始日期
-	Durationend   time.Time `orm:"type(datetime);column(Durationend);size(0);description(合同终止日期)"`           //合同终止日期
-	Paid          float64   `orm:"column(paid);size(11);description(折扣)"`                                    //实付
+	Members       *Members  `orm:"rel(fk);description(会员)"`                                          //多对一 会员
+	Contract      int       `orm:"column(contract_id);description(对应合同)"`                            //多对一 合同
+	Durationstart time.Time `orm:"type(datetime);column(Durationstart);size(0);description(合同开始日期)"` //合同开始日期
+	Durationend   time.Time `orm:"type(datetime);column(Durationend);size(0);description(合同终止日期)"`   //合同终止日期
+	Paid          float64   `orm:"column(paid);size(11);description(折扣)"`                            //实付
+	StaffID       int       `orm:"column(staff_id);description(对应签约员工)"`
 	Memo          string    `orm:"column(memo);size(1024);description(备注)"`                                  //备注
 	Createtime    time.Time `orm:"auto_now_add;type(datetime);column(createtime);size(0);description(新建时间)"` //自动新建时间
 	Updatetime    time.Time `orm:"auto_now;type(datetime);column(updatetime);size(0);description(更新时间)"`     //自动更新时间

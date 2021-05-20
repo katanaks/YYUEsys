@@ -25,7 +25,7 @@ func GetMembersList(cid, page, limit int) ([]orm.Params, int64) {
 	var res []orm.Params
 
 	count, err := qs.Filter("CID", cid).OrderBy("ID").Limit(limit, page*limit-limit).RelatedSel().
-		Values(&res, "ID", "Name", "Gender", "Birthday", "Contactname", "Contacttelephone", "State", "Updatetime")
+		Values(&res, "ID", "Name", "Gender", "Birthday", "Contacttelephone", "State", "Updatetime")
 
 	if err != nil {
 		logs.Error(err)
@@ -51,15 +51,25 @@ func GetMembersList(cid, page, limit int) ([]orm.Params, int64) {
 //AddMember 新增
 func AddMember(item Members, itemtransaction Membertransaction) error {
 	o := orm.NewOrm()
+	var err error
+	//开始插入事务
+	to, err := o.Begin()
 
-	newid, err := o.Insert(&item)         //写新会员
-	itemtransaction.MemberID = int(newid) //赋值交易表ID
-	o.Insert(&itemtransaction)            //写交易表
+	//插入会员
+	//====================
+	to.Insert(&item)
+	//插入相关服务和数量
+	itemtransaction.Members = &item
 
+	_, err = o.Insert(&itemtransaction)
+
+	//错误处理
 	if err != nil {
+		to.Rollback() //存在错误，回滚操作
 		logs.Error(err.Error())
+	} else {
+		to.Commit() //提交插入-成功
 	}
-
 	return err
 }
 
@@ -122,3 +132,37 @@ func Getpredata(ID int) []orm.Params {
 	qs.Filter("ID", ID).Values(&res, "ID", "Price", "Duration")
 	return res
 }
+
+//GetMembertransactionItem 读取会员交易列表
+func GetMembertransactionItem(MemberID int64) []orm.Params {
+	//var ContractName string
+	var item []orm.Params
+	orm.NewOrm().QueryTable("Membertransaction").
+		Filter("MemberID", MemberID).
+		OrderBy("Durationend").
+		Limit(1).
+		RelatedSel().
+		Values(&item)
+
+	item[0]["aaaaaaaaaaaaddd"] = "kdkdkdk"
+
+	for k, v := range item {
+		Sid := v["ContractID"].(int64)
+		var itemContract []orm.Params
+		orm.NewOrm().QueryTable("Contract").
+			Filter("ID", Sid).
+			OrderBy("ID").
+			Limit(1).
+			RelatedSel().
+			Values(&itemContract)
+
+		item[k]["ContractName"] = itemContract[0]["Name"]
+	}
+	return item
+
+}
+
+//SaveMembertransactionItem 保存会员交易内容
+//func SaveMembertransactionItem(o orm.Ormer, item Contract, allservices []orm.Params){
+//
+//}

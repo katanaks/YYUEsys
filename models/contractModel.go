@@ -98,8 +98,6 @@ func UpdateContract(item Contract, allservices []orm.Params) error {
 
 //SaveserviceItem 保存服务条款
 func SaveserviceItem(o orm.Ormer, item Contract, allservices []orm.Params) {
-	// o := orm.NewOrm()
-
 	//插入相关服务和数量
 	var serviceItem Contractitem
 	for _, v := range allservices {
