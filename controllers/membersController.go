@@ -118,24 +118,28 @@ func (c *MembersController) GetList() {
 	limit, _ := c.GetInt("limit")
 	rslist, count := models.GetMembersList(c.GetSession("CID").(int), page, limit)
 	// println(len(Rlist))
+
+	//准备列表数据
+	//查询相应字段值
+	for k, v := range rslist {
+		MemberID := v["ID"].(int64)
+		ContractName := models.GetMemberContract(MemberID)         //获取相关合同名称
+		MemberDurationend := models.GetMemberDurationend(MemberID) //获取到期日期
+		rslist[k]["Contactname"] = ContractName
+		rslist[k]["Durationend"] = MemberDurationend.String()[0:10]
+		fmt.Println("返回的合同名", ContractName)
+		//for _, v1 := range items { //赋值服务数量
+		//	keystr := v1["Service__Name"].(string)
+		//	rslist[k][keystr] = v1["Quantity"]
+		//}
+	}
+
 	var code = 200
 	var msg = "success"
 	if len(rslist) == 0 {
 		code = 100
 		msg = "无数据。"
 	}
-	//准备列表数据
-	////查询相应字段值
-	//for k, v := range rslist {
-	//	MemberID := v["ID"].(int64)
-	//	transactionItem := models.GetMembertransactionItem(MemberID) //获取相关同同名称
-	//	fmt.Println(k,transactionItem)
-	//	//
-	//	//for _, v1 := range items { //赋值服务数量
-	//	//	keystr := v1["Service__Name"].(string)
-	//	//	rslist[k][keystr] = v1["Quantity"]
-	//	//}
-	//}
 	//返回Json
 	Datastr := ServiceJSON{code, msg, count, rslist}
 	c.Data["json"] = Datastr
