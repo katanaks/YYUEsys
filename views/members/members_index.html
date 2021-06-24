@@ -44,7 +44,7 @@
                 first: true,
                 page: true,
                 response: {
-                    statusCode: 200 
+                    statusCode: 200
                 },
                 limit: 500,
                 limits: [10, 20, 30, 40, 50, 100, 200, 500],
@@ -73,13 +73,14 @@
     <!-- 开始 表格工具栏 -->
     <script type="text/html" id="toolbar">
         <div class="layui-btn-container">
-            <div class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>会员签约</div>
+            <div class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>新签会员</div>
         </div>
     </script>
     <!-- 结束 表格工具栏 -->
 
     <!-- 开始 行操作栏 -->
     <script type="text/html" id="editbar">
+        <a class="layui-btn layui-btn-sm" lay-event="renewal"><i class="layui-icon">&#xe642;</i> 续费</a>
         <a class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon">&#xe642;</i> 编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del"><i class="layui-icon">&#xe640;</i> 删除</a>
     </script>
@@ -98,7 +99,7 @@
                     case 'add':
                         layer.open({
                             type: 2,
-                            title: '会员签约登记',
+                            title: '新签会员登记',
                             content: ['/members/pageadd', 'no'],
                             maxmin: true,
                             area: ['680px', '740px'],
@@ -160,7 +161,7 @@
                         layer.open({
                             type: 2,
                             title: '合同编辑',
-                            content: ['/basic/contract/pageedit?ID=' + data.ID],
+                            content: ['/basic/contract/pageedit?ID=' + data.ID, 'no'],
 
                             maxmin: true,
                             area: ['750px', '550px'],
@@ -172,6 +173,26 @@
                             }
                         });
                         break;
+
+                    case 'renewal':
+                        console.log(data.ID)
+                        layer.open({
+                            type: 2,
+                            title: '会员续费',
+                            content: ['/members/pagerenewal?ID=' + data.ID, 'no'],
+                            shade: 0.5,
+                            maxmin: true,
+                            area: ['680px', '740px'],
+                            btn: ['保存', '取消'],
+                            yes: function (index, layero) {
+                                //点击确认触发 iframe 内容中的按钮提交
+                                var submit = layero.find('iframe').contents().find("#form-submit");
+                                submit.click();
+                            }
+                        });
+                        break;
+
+
                 };
             });
             //结束 监听行工具栏事件

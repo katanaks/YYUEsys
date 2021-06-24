@@ -5,6 +5,7 @@ package models
 /////////////////////////////////////////////////////////////////////////////
 
 import (
+	"fmt"
 	"github.com/beego/beego/v2/client/orm"
 	"github.com/beego/beego/v2/core/logs"
 	"time"
@@ -170,24 +171,29 @@ func GetMemberContract(MemberID int64) string {
 	//查询会员交易记录
 	orm.NewOrm().QueryTable("Membertransaction").
 		Filter("Members", MemberID).
-		Filter("Durationstart__lt", time.Now()).
-		Filter("Durationend__gt", time.Now()).
-		OrderBy("Durationstart").
+		//Filter("Durationstart__lt", time.Now()).
+		//Filter("Durationend__gt", time.Now()).
+		OrderBy("-Durationend").
 		RelatedSel().
 		Values(&Membertransactions)
 
-	//fmt.Println("相关交易", Membertransactions)
+	fmt.Println("相关交易", Membertransactions)
 
 	var ContractItem []orm.Params
-
+	//var ContractName string
 	//查询对应合同名称
-	orm.NewOrm().QueryTable("Contract").
-		Filter("ID", Membertransactions[0]["Contract"]).
-		Values(&ContractItem)
+	if Membertransactions != nil {
+		orm.NewOrm().QueryTable("Contract").
+			Filter("ID", Membertransactions[0]["Contract"]).
+			Values(&ContractItem)
 
-	ContractName := ContractItem[0]["Name"].(string)
+		ContractName := ContractItem[0]["Name"].(string)
 
-	return ContractName
+		return ContractName
+	} else {
+		return ""
+	}
+
 }
 
 //GetMemberDurationend 获取会员到期日期
@@ -196,7 +202,7 @@ func GetMemberDurationend(MemberID int64) time.Time {
 
 	orm.NewOrm().QueryTable("Membertransaction").
 		Filter("Members", MemberID).
-		OrderBy("Durationend").
+		OrderBy("-Durationend").
 		RelatedSel().
 		Values(&Membertransactions)
 

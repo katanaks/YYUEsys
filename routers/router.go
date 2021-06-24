@@ -89,6 +89,7 @@ func init() {
 	beego.Router("/members/", &controllers.MembersController{}, "get:PageIndex")      //显示 列表
 	beego.Router("/members/pageadd", &controllers.MembersController{}, "get:PageAdd") //显示 增加
 	// beego.Router("/basic/service/pageedit", &controllers.ServiceController{}, "get:PageEdit") //显示 编辑
+	beego.Router("/members/pagerenewal", &controllers.MembersController{}, "get:PageRenewal") //显示 续费约
 
 	beego.Router("/members/getlist", &controllers.MembersController{}, "get:GetList") //方法 获取列表
 	beego.Router("/members/save", &controllers.MembersController{}, "post:Save")      //方法 保存

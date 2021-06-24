@@ -88,6 +88,41 @@ func (c *MembersController) PageAdd() {
 	c.TplName = "members/members_edit.html"
 }
 
+//PageRenewal 显示 续费页面 方法
+//============================================================
+func (c *MembersController) PageRenewal() {
+	id, _ := c.GetInt("ID")
+	println("续费会员id", id)
+	//处理员工列表
+	StaffList, _ := models.GetStaffList(c.GetSession("CID").(int), 1, 1000) //获取列表
+	c.Data["StaffList"] = StaffList                                         //指定循环列表
+
+	//处理合同列表
+	ContractList, _ := models.GetContractList(c.GetSession("CID").(int), 1, 1000) //获取列表
+	c.Data["ContractList"] = ContractList
+
+	//初始化预设合同相关值
+	ContractSelected := int(ContractList[0]["ID"].(int64))
+	fmt.Println(ContractSelected)
+	//执行查询
+	rs := models.Getpredata(ContractSelected)
+	start := time.Now().Format("2006-01-02")
+	end := time.Now().AddDate(0, int(rs[0]["Duration"].(float64)), -1).Format("2006-01-02")
+
+	//预设当前日期
+	c.Data["Durationstart"] = start
+	c.Data["Durationend"] = end
+
+	//预设当前价格
+	c.Data["Price"] = rs[0]["Price"]
+	fmt.Println(rs[0]["Price"])
+	//预设其它数据
+	c.Data["Selected"] = "有效"
+	c.Data["Birthday"] = "2015-01-01"
+
+	c.TplName = "members/members_renewal.html"
+}
+
 // //PageEdit 显示 编辑服务页面 方法
 // //============================================================
 // func (c *MembersController) PageEdit() {
